@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.EntityFrameworkCore;
+using WebAppOne.Models;
 
 namespace WebAppOne
 {
@@ -19,6 +21,9 @@ namespace WebAppOne
                 options.FallbackPolicy = options.DefaultPolicy;
             });
             builder.Services.AddRazorPages();
+
+            builder.Services.AddDbContext<InvoicesContext>(options => options
+            .UseSqlServer(builder.Configuration.GetConnectionString("Server=.;Database=Invoices;Integrated Security=True;Encrypt=False")));
 
             var app = builder.Build();
 
