@@ -1,0 +1,21 @@
+﻿@model JustTrialWebApp.ViewModels.Home.IndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <h2>@Model.Message</h2>
+    <p>@Model.Year!</p>
+</div>
+
+<ul>
+    @foreach(var name in Model.Names)
+    {
+        <li>@name</li>
+    }
+</ul>
+
+<div class="text-center">
+    <h1>@Html.Raw(Model.HtmlGreet)</h1>
+</div>
