@@ -1,4 +1,10 @@
-﻿@model JustTrialWebApp.ViewModels.Home.IndexViewModel
+﻿@using JustTrialWebApp.ViewModels.Home
+@using JustTrialWebApp.Services
+
+@model IndexViewModel
+
+@inject IStringManipulation StringManipolateEngine
+
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -12,7 +18,7 @@
 <ul>
     @foreach(var name in Model.Names)
     {
-        <li>@name</li>
+        <li>@StringManipolateEngine.MakeFirstAndSecondLetterUpper(name)</li>
     }
 </ul>
 

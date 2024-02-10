@@ -1,3 +1,5 @@
+using JustTrialWebApp.Services;
+
 namespace JustTrialWebApp
 {
     public class Program
@@ -8,6 +10,7 @@ namespace JustTrialWebApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddTransient<IStringManipulation, StringManipulation>();
 
             var app = builder.Build();
 
