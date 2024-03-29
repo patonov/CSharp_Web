@@ -1,4 +1,6 @@
-﻿namespace Eventures.App.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Eventures.App.Models
 {
     public class EventAllViewModel
     {
@@ -10,7 +12,6 @@
 
         public string Place { get; set; }
 
-        public string Owner { get; set; }
-
+      
     }
 }

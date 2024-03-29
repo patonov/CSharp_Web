@@ -18,28 +18,16 @@ namespace Eventures.App.Controllers
             this.context = context;
         }
 
-        public IActionResult All()
+        public IActionResult Create()
         {
-            List<EventAllViewModel> events = context.Events
-                    .Select(eventFromDB => new EventAllViewModel
-                    {
-                        Name = eventFromDB.Name,
-                        Place = eventFromDB.Place,
-                        Start = eventFromDB.Start.ToString("dd-MMM-yyyy HH:mm", CultureInfo.InvariantCulture),
-                        End = eventFromDB.End.ToString("dd-MMM-yyyy HH:mm", CultureInfo.InvariantCulture),
-                        Owner = eventFromDB.Owner.UserName
-                    }).ToList();
-
-            return this.View(events);
+            return this.View();
         }
-
+        
         [HttpPost]
         public IActionResult Create(EventCreateBindingModel bindingModel)
         {
             if (this.ModelState.IsValid)
             {
-                string currentUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
                 Event eventForDB = new Event
                 {
                     Name = bindingModel.Name,
@@ -47,8 +35,7 @@ namespace Eventures.App.Controllers
                     Start = bindingModel.Start,
                     End = bindingModel.End,
                     TotalTickets = bindingModel.TotalTickets,
-                    PricePerTicket = bindingModel.PricePerTicket,
-                    OwnerId = currentUserId
+                    PricePerTicket = bindingModel.PricePerTicket
                 };
 
                 context.Events.Add(eventForDB);
@@ -58,6 +45,20 @@ namespace Eventures.App.Controllers
             }
 
             return this.View();
+        }
+
+        public IActionResult All()
+        {
+            List<EventAllViewModel> events = context.Events
+                    .Select(eventFromDB => new EventAllViewModel
+                    {
+                        Name = eventFromDB.Name,
+                        Place = eventFromDB.Place,
+                        Start = eventFromDB.Start.ToString("dd-MMM-yyyy HH:mm", CultureInfo.InvariantCulture),
+                        End = eventFromDB.End.ToString("dd-MMM-yyyy HH:mm", CultureInfo.InvariantCulture)
+                    }).ToList();
+
+            return this.View(events);
         }
     }
 }
