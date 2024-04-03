@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text;
 
 namespace SimpleHttpRequester
 {
@@ -17,6 +18,21 @@ namespace SimpleHttpRequester
             //Console.WriteLine(content);
 
             File.WriteAllText("../../../index.html", content);
+
+
+
+            var activationUrl = "https://mail.bg/auth/lgn";
+
+            var postData = "user=patonec@mail.bg&pass=urungel!great";
+            StringContent uhuu = new StringContent(postData, Encoding.UTF8, "application/json"); 
+            
+            var response = await client.PostAsync(activationUrl, uhuu);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+
+                Console.WriteLine(result);
+            }
 
         }
     }
