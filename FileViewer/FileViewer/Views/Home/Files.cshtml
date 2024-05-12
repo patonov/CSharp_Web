@@ -1,0 +1,17 @@
+﻿@model List<string>
+
+@{
+    ViewData["Title"] = "Files";
+}
+
+<h1>Files on my PC</h1>
+
+@{
+    ViewBag.Title = "Files";
+}
+<h2>Files listing here:</h2>
+
+@foreach (var file in Model)
+{
+    <div>@file</div>    
+}
