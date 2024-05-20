@@ -1,4 +1,6 @@
-﻿using GameStore.Dtos;
+﻿using GameStore.Data;
+using GameStore.Dtos;
+using GameStore.Models;
 
 namespace GameStore.EndPoints
 {
@@ -11,6 +13,8 @@ namespace GameStore.EndPoints
                 new (4, "Star Craft", "Strategy", 40.25M, new DateOnly(2001, 11, 1)),
                 new (5, "Super Mario", "The Greatest Game of all times", 1.99M, new DateOnly(1987, 2, 8))
                ];
+
+        public static Genre Genre { get; private set; }
 
         public static RouteGroupBuilder MapGameEndpoints(this WebApplication app)
         {
@@ -25,24 +29,34 @@ namespace GameStore.EndPoints
                 return game is null ? Results.NotFound() : Results.Ok(game);
             }).WithName("GetGame");
 
-            group.MapPost("/", (CreateGameDto newGame) =>
+            group.MapPost("/", (CreateGameDto newGame, GameStoreDbContext dbContext) =>
             {
                 if (string.IsNullOrEmpty(newGame.Name))
                 {
                     return Results.BadRequest("Name is required.");
                 }
 
-                GameDto game = new(
-                    games.Count + 1,
-                    newGame.Name,
-                    newGame.Genre,
-                    newGame.Price,
-                    newGame.ReleaseDate
-                    );
+                Game game = new()
+                {
+                    Name = newGame.Name,
+                    GenreId = newGame.GenreId,
+                    Genre = dbContext.Genres.Find(newGame.Id),
+                    Price = newGame.Price,
+                    ReleaseDate = newGame.ReleaseDate
+                };
 
-                games.Add(game);
+                dbContext.Games.Add(game);
+                dbContext.SaveChanges();
 
-                return Results.CreatedAtRoute("GetGame", new { id = game.Id }, game);
+                GameDto gameDto = new(
+                    game.Id,
+                    game.Name,
+                    game.Genre!.Name,
+                    game.Price,
+                    game.ReleaseDate
+                );
+
+                return Results.CreatedAtRoute("GetGame", new { id = game.Id }, gameDto);
             }).WithParameterValidation();
 
             group.MapPut("/{id}", (int id, UpdateGameDto updateGame) =>
