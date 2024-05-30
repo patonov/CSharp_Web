@@ -1,12 +1,12 @@
 ﻿namespace GameStoreFrontEnd.Models
 {
-    public class GameSummary 
+    public class GameDetails
     {
         public int Id { get; set; }
 
         public required string Name { get; set; }
 
-        public required string Genre { get; set; }
+        public string? GenreId { get; set; }
 
         public decimal Price { get; set; }
 
