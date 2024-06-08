@@ -1,5 +1,7 @@
 ﻿@page "/editgame"
+
 @inject NavigationManager NavManager
+@inject GameClient gameClient
 
 <PageTitle>New Game</PageTitle>
 
@@ -56,8 +58,7 @@ else
     };
 
     private GenreClient genreClient = new();
-    private GameClient gameClient = new();
-
+   
     private Genre[]? genres;
 
     protected override void OnInitialized()

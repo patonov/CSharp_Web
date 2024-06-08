@@ -1,3 +1,4 @@
+using GameStoreFrontEnd.Clients;
 using GameStoreFrontEnd.Components;
 
 namespace GameStoreFrontEnd
@@ -10,6 +11,7 @@ namespace GameStoreFrontEnd
 
             // Add services to the container.
             builder.Services.AddRazorComponents();
+            builder.Services.AddSingleton<GameClient>();
 
             var app = builder.Build();
 
