@@ -2,6 +2,7 @@
 
 @inject NavigationManager NavManager
 @inject GameClient gameClient
+@inject GenreClient genreClient
 
 <PageTitle>New Game</PageTitle>
 
@@ -15,10 +16,12 @@ else
 {
     <div class="row">
         <div class="col-md-4">
-            <EditForm Model="@game" FormName="editGame" OnSubmit="HandleSubmit">
+            <EditForm Model="@game" FormName="editGame" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
                 <div class="mb-3">
                     <label for="name" class="form-label">Name:</label>
                     <InputText id="name" @bind-Value="game.Name" class="form-control" />
+                    <ValidationMessage For="() => game.Name"/>
                 </div> 
 
                 <div class="mb-3">
@@ -30,11 +33,13 @@ else
                             <option value="@genre.Id">@genre.Name</option>
                         }
                     </InputSelect>
+                    <ValidationMessage For="() => game.GenreId"/>
                 </div>
 
                 <div class="mb-3">
                     <label for="price" class="form-label">Price:</label>
                     <InputNumber id="price" @bind-Value="game.Price" class="form-control" />
+                    <ValidationMessage For="() => game.Price"/>
                 </div>
 
                 <div class="mb-3">
@@ -56,8 +61,6 @@ else
         Name = string.Empty,
         ReleaseDate = DateOnly.FromDateTime(DateTime.UtcNow)
     };
-
-    private GenreClient genreClient = new();
    
     private Genre[]? genres;
 
@@ -69,6 +72,6 @@ else
     private void HandleSubmit()
     {
         gameClient.AddGame(game);
-        NavManager.NavigateTo("/");
+        NavManager.NavigateTo("/", true, true);
     }
 }
