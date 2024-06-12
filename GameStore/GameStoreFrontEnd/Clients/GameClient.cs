@@ -35,5 +35,23 @@ namespace GameStoreFrontEnd.Clients
 
             games.Add(gameSummary);
         }
+
+        public GameDetails GetGame(int id)
+        { 
+            GameSummary? game = games.Find(g => g.Id == id);
+            ArgumentNullException.ThrowIfNull(game);
+            
+            var genre = genres.Single(genre => string.Equals(genre.Name, game.Genre, StringComparison.OrdinalIgnoreCase));
+
+            return new GameDetails
+            {
+                Id = game.Id,
+                Name = game.Name,
+                GenreId = genre.Id.ToString(),
+                Price = game.Price,
+                ReleaseDate = game.ReleaseDate
+            };
+        }
+
     }
 }
