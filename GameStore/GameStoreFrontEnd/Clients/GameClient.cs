@@ -22,11 +22,11 @@ namespace GameStoreFrontEnd.Clients
 
         public void AddGame(GameDetails game)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(game.GenreId);
-            var genre = genres.Single(g => g.Id == int.Parse(game.GenreId));
-            var gameSummary = new GameSummary 
-            { 
-                Id = games.Count + 1, 
+            Genre genre = GetGenreById(game.GenreId);
+
+            var gameSummary = new GameSummary
+            {
+                Id = games.Count + 1,
                 Name = game.Name,
                 Genre = genre.Name,
                 Price = game.Price,
@@ -36,11 +36,17 @@ namespace GameStoreFrontEnd.Clients
             games.Add(gameSummary);
         }
 
-        public GameDetails GetGame(int id)
-        { 
-            GameSummary? game = games.Find(g => g.Id == id);
-            ArgumentNullException.ThrowIfNull(game);
+        private Genre GetGenreById(string? id)
+        {
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(id);
+            return genres.Single(g => g.Id == int.Parse(id));
             
+        }
+
+        public GameDetails GetGame(int id)
+        {
+            GameSummary game = GetGameSummaryById(id);
+
             var genre = genres.Single(genre => string.Equals(genre.Name, game.Genre, StringComparison.OrdinalIgnoreCase));
 
             return new GameDetails
@@ -53,5 +59,11 @@ namespace GameStoreFrontEnd.Clients
             };
         }
 
+        private GameSummary GetGameSummaryById(int id)
+        {
+            GameSummary? game = games.Find(g => g.Id == id);
+            ArgumentNullException.ThrowIfNull(game);
+            return game;
+        }
     }
 }
