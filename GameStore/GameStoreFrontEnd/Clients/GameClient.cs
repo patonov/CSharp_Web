@@ -59,6 +59,17 @@ namespace GameStoreFrontEnd.Clients
             };
         }
 
+        public void UpdateGame(GameDetails updatedGame)
+        {
+            var genre = GetGenreById(updatedGame.GenreId);
+            GameSummary existingGame = GetGameSummaryById(updatedGame.Id);
+
+            existingGame.Name = updatedGame.Name;
+            existingGame.Genre = genre.Name;
+            existingGame.Price = updatedGame.Price;
+            existingGame.ReleaseDate = updatedGame.ReleaseDate;
+        }
+
         private GameSummary GetGameSummaryById(int id)
         {
             GameSummary? game = games.Find(g => g.Id == id);
