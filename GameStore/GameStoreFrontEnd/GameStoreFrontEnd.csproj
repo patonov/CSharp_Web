@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameStore\GameStore.csproj" />
+    <None Include="..\GameStore\games.http" Link="games.http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RestSharp" Version="111.3.0" />
   </ItemGroup>
 
 </Project>

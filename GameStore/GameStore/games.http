@@ -1,5 +1,5 @@
 
-GET http://localhost:44300/games/1
+GET http://localhost:1443/games
 ###
 PUT http://localhost:44300/games/1
 Content-Type: application/json

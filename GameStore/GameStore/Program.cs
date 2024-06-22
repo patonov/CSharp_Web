@@ -18,12 +18,12 @@ namespace GameStore
 
             var app = builder.Build();
 
-            //app.MapGet("/", () => "Hello World!");
+            app.MapGet("/", () => "Hello World!");
 
             app.MapGameEndpoints();
             app.MapGenreEndPoints();
 
-            await app.MigrateDbAsync();
+           // await app.MigrateDbAsync();
 
             app.Run();
 

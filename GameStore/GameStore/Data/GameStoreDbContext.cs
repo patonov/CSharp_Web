@@ -15,6 +15,14 @@ namespace GameStore.Data
 
         public DbSet<Genre> Genres => Set<Genre>();
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=.;Database=GameStoreDatabase;Integrated Security=True;Encrypt=False");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Genre>().HasData(
