@@ -68,6 +68,20 @@ namespace StudentPortal.Controllers
 
             return RedirectToAction("List", "Students");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Student viewStudent)
+        { 
+            var student = await dbContext.Students.AsNoTracking().FirstOrDefaultAsync(x => x.Id == viewStudent.Id);
+            
+            if (student is not null) 
+            { 
+                dbContext.Students.Remove(viewStudent);
+                await dbContext.SaveChangesAsync();
+            }
+
+            return RedirectToAction("List", "Students");
+        }
             
     }
 }
