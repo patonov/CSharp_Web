@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChatService } from '../chat.service';
+import { error } from 'console';
 
 @Component({
   selector: 'app-home',
@@ -9,8 +11,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class HomeComponent implements OnInit {
   userform: FormGroup = new FormGroup({});
   submitted = false;
+  apiErrorMessages: string[] = [];
+  openChat = false;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: FormBuilder, private chatService: ChatService) {}
 
   ngOnInit(): void {  
     this.initializeForm();
@@ -24,9 +28,19 @@ export class HomeComponent implements OnInit {
 
   submitForm(){
     this.submitted = true;
+    this.apiErrorMessages = [];
 
     if(this.userform.valid){
-      console.log(this.userform.value);
+      this.chatService.registerUser(this.userform.value).subscribe({
+        next: () => {
+          this.openChat = true;
+        },
+        error: error => {
+          if(typeof (error.error) !== 'object'){
+            this.apiErrorMessages.push(error.error);
+          }
+        }
+        })
     }
   }
 
