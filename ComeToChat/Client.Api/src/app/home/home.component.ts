@@ -33,15 +33,21 @@ export class HomeComponent implements OnInit {
     if(this.userform.valid){
       this.chatService.registerUser(this.userform.value).subscribe({
         next: () => {
+          this.chatService.myName = this.userform.get('name')?.value;
           this.openChat = true;
+          this.userform.reset();
+          this.submitted = false;
         },
         error: error => {
           if(typeof (error.error) !== 'object'){
             this.apiErrorMessages.push(error.error);
           }
         }
-        })
+      })
     }
   }
 
+  closeChat(){
+    this.openChat = false;
+  }
 }
