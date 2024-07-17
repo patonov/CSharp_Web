@@ -18,15 +18,20 @@ export class ChatService {
     return this.httpClient.post(`${environment.apiUrl}api/chat/register-user`, user, {responseType: 'text'});
   }
 
-  createChatConnection(){
+  createChatConnection() {
     this.chatConnection = new HubConnectionBuilder().withUrl(`${environment.apiUrl}hubs/chat`).withAutomaticReconnect().build();
   
     this.chatConnection.start().catch(error => { console.log(error) });
 
-    this.chatConnection.on('User connected.', () => { console.log('The server has been called here.') });
+    this.chatConnection.on('UserConnected', () => { 
+      this.addUserConnectionId() });
   }
 
-  stopChatConnection(){
+  stopChatConnection() {
     this.chatConnection?.stop().catch(error => console.log(error));
+  }
+
+  async addUserConnectionId() {
+    return this.chatConnection?.invoke('AddUserConnectionId', this.myName).catch(error => console.log(error));
   }
 }
