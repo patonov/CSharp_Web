@@ -17,13 +17,20 @@ namespace Api.Hubs
         public override async Task OnConnectedAsync()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, "Come2Chat");
-            await Clients.Caller.SendAsync("User connected.");
+            await Clients.Caller.SendAsync("UserConnected");
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, "Come2Chat");
             await base.OnDisconnectedAsync(exception);
+        }
+
+        public async Task AddUserConnectionId(string name)
+        { 
+            _chatService.AddUserConnectionId(name, Context.ConnectionId);
+            var onlineUsers = _chatService.GetOnlineUsers();
+            await Clients.Groups("Come2Chat").SendAsync("OnlineUsers", onlineUsers);
         }
     }
 }
