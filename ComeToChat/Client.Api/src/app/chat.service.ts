@@ -11,6 +11,7 @@ import { error } from 'console';
 export class ChatService {
   myName: string = '';
   private chatConnection?: HubConnection;
+  onlineUsers: string[] = [];
 
   constructor(private httpClient: HttpClient) { }
 
@@ -24,7 +25,13 @@ export class ChatService {
     this.chatConnection.start().catch(error => { console.log(error) });
 
     this.chatConnection.on('UserConnected', () => { 
-      this.addUserConnectionId() });
+      this.addUserConnectionId() 
+    });
+
+      this.chatConnection.on('OnlineUsers', (onlineUsers) => { 
+        this.onlineUsers = [...onlineUsers];
+      });
+    
   }
 
   stopChatConnection() {
