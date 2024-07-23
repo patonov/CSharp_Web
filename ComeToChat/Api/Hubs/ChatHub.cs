@@ -1,4 +1,5 @@
-﻿using Api.Services;
+﻿using Api.Dtos;
+using Api.Services;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Threading.Tasks;
@@ -35,6 +36,11 @@ namespace Api.Hubs
         { 
             _chatService.AddUserConnectionId(name, Context.ConnectionId);
             await DisplayOnlineUsers();
+        }
+
+        public async Task ReveiveMessage(MessageDto messageDto)
+        {
+            await Clients.Group("Come2Chat").SendAsync("NewMessage", messageDto);
         }
 
         private async Task DisplayOnlineUsers()
