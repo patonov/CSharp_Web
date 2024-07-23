@@ -4,6 +4,7 @@ import { environment } from '../../environment';
 import { User } from './models/User';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { error } from 'console';
+import { Message } from './models/Message';
 
 @Injectable({
   providedIn: 'root'
@@ -40,5 +41,14 @@ export class ChatService {
 
   async addUserConnectionId() {
     return this.chatConnection?.invoke('AddUserConnectionId', this.myName).catch(error => console.log(error));
+  }
+
+  async sendMessage(content: string) {
+    const message: Message = {
+      from: this.myName,
+      content
+    };
+
+    return this.chatConnection?.invoke("ReveiveMessage", message).catch(error => console.log(error));
   }
 }
