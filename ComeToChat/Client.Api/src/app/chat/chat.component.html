@@ -37,24 +37,7 @@
         <div class="card border-secondary">
             <div class="card-header h3 text-muted text-center">Messages</div>
             <div class="card-body" style="min-height: 500px;">
-                <div style="overflow: auto; height: 450px;">
-                    <p class="card-text">
-                        <span class="text-primary">User1: </span>
-                        <span class="ml-1">Some messages go from here.</span>
-                    </p>
-                    <p class="card-text">
-                        <span class="text-primary">User2: </span>
-                        <span class="ml-1">Some messages go from here.</span>
-                    </p>
-                    <p class="card-text">
-                        <span class="text-primary">User2: </span>
-                        <span class="ml-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero consequuntur distinctio similique odit dolor quos reprehenderit, magni laborum, iste saepe, cupiditate fugiat natus corporis et quam architecto explicabo. Aliquid, labore?</span>
-                    </p>
-                    <p class="card-text">
-                        <span class="text-primary">User2: </span>
-                        <span class="ml-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero consequuntur distinctio similique odit dolor quos reprehenderit, magni laborum, iste saepe, cupiditate fugiat natus corporis et quam architecto explicabo. Aliquid, labore?</span>
-                    </p>
-                </div>
+                <app-messages [messages]="chatService.messages"></app-messages>
             </div>
             <div class="card-footer">
                 <app-chat-input (contentEmitter)="sendMessage($event)"></app-chat-input>
