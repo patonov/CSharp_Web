@@ -43,10 +43,31 @@ namespace Api.Hubs
             await Clients.Group("Come2Chat").SendAsync("NewMessage", messageDto);
         }
 
+        public async Task CreatePrivateChat(MessageDto message)
+        {
+            string privateGroupName = GetPrivateGroupName(message.From, message.To);
+            await Groups.AddToGroupAsync(Context.ConnectionId, privateGroupName);
+            var toConnectionId = _chatService.GetConnectionIdByUser(message.To);
+
+            await Clients.Client(toConnectionId).SendAsync("OpenPrivateChat", message);
+        }
+
+        public async Task ReceivePrivateTask(MessageDto message)
+        {
+            string privateGroupName = GetPrivateGroupName(message.From, message.To);
+            await Clients.Group(privateGroupName).SendAsync("NewPrivateMessage", message);
+        }
+
         private async Task DisplayOnlineUsers()
         {
             var onlineUsers = _chatService.GetOnlineUsers();
             await Clients.Groups("Come2Chat").SendAsync("OnlineUsers", onlineUsers);
+        }
+
+        private string GetPrivateGroupName(string from, string to)
+        {
+            var stringCompare = string.CompareOrdinal(from, to) < 0;
+            return stringCompare ? $"{from}-{to}" : $"{to}-{from}";
         }
     }
 }
