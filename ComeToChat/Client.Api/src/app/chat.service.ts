@@ -5,6 +5,8 @@ import { User } from './models/User';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { error } from 'console';
 import { Message } from './models/Message';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PrivateChatComponent } from './private-chat/private-chat.component';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +16,10 @@ export class ChatService {
   private chatConnection?: HubConnection;
   onlineUsers: string[] = [];
   messages: Message[] = [];
+  privateMessages: Message[] = [];
+  privateMessageInitiated = false;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private modalService: NgbModal) { }
 
   registerUser(user: User) {
     return this.httpClient.post(`${environment.apiUrl}api/chat/register-user`, user, {responseType: 'text'});
@@ -37,7 +41,23 @@ export class ChatService {
     this.chatConnection.on('NewMessage', (newMessage: Message) => {
       this.messages = [...this.messages, newMessage];
     });
+
+    this.chatConnection.on('OpenPrivateChat', (newMessage: Message) => {
+      this.privateMessages = [...this.privateMessages, newMessage];
+      this.privateMessageInitiated = true;
+      const modalRef = this.modalService.open(PrivateChatComponent)
+      modalRef.componentInstance.toUser = newMessage.from;
+    });
     
+    this.chatConnection.on('NewPrivateMessage', (newMessage: Message) => {
+      this.privateMessages = [...this.privateMessages, newMessage];
+    });
+
+    this.chatConnection.on('ClosePrivateChat', () => {
+      this.privateMessageInitiated = false;
+      this.privateMessages = [];
+      this.modalService.dismissAll();
+    });
   }
 
   stopChatConnection() {
@@ -55,5 +75,28 @@ export class ChatService {
     };
 
     return this.chatConnection?.invoke("ReveiveMessage", message).catch(error => console.log(error));
+  }
+
+  async closePrivateChatMessage(otherUser: string){
+    return this.chatConnection?.invoke('RemovePrivateChat', this.myName, otherUser).catch(error => console.log(error));
+  }
+
+  async sendPrivateMessage(to: string, content: string){
+    const message: Message = {
+      from: this.myName,
+      to,
+      content
+    };
+
+    if(!this.privateMessageInitiated){
+      this.privateMessageInitiated = true;
+      return this.chatConnection?.invoke("CreatePrivateChat", message).then(() => {
+        this.privateMessages = [...this.privateMessages, message]
+      })
+      .catch(error => console.log(error));
+    } else {
+      return this.chatConnection?.invoke("ReceivePrivateMessage", message)
+      .catch(error => console.log(error));
+    }    
   }
 }
