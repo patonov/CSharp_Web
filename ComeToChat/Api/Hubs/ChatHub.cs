@@ -48,14 +48,25 @@ namespace Api.Hubs
             string privateGroupName = GetPrivateGroupName(message.From, message.To);
             await Groups.AddToGroupAsync(Context.ConnectionId, privateGroupName);
             var toConnectionId = _chatService.GetConnectionIdByUser(message.To);
+            await Groups.AddToGroupAsync(toConnectionId, privateGroupName);
 
             await Clients.Client(toConnectionId).SendAsync("OpenPrivateChat", message);
         }
 
-        public async Task ReceivePrivateTask(MessageDto message)
+        public async Task ReceivePrivateMessage(MessageDto message) 
         {
             string privateGroupName = GetPrivateGroupName(message.From, message.To);
             await Clients.Group(privateGroupName).SendAsync("NewPrivateMessage", message);
+        }
+
+        public async Task RemovePrivateChat(string from, string to)
+        {
+            string privateGroupName = GetPrivateGroupName(from, to);
+            await Clients.Group(privateGroupName).SendAsync("ClosePrivateChat");
+
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, privateGroupName);
+            var toConnectionId = _chatService.GetConnectionIdByUser(to);
+            await Groups.RemoveFromGroupAsync(toConnectionId, privateGroupName);
         }
 
         private async Task DisplayOnlineUsers()
